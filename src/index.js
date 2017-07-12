@@ -1,22 +1,23 @@
 import React from 'react'
-import { render } from 'react-dom'
+import ReactDOM from 'react-dom'
 import { AppContainer } from 'react-hot-loader'
-import 'react-hot-loader/patch'
-import 'App.css'
-// import 'materialize-css/dist/js/materialize.min'
-// import 'materialize-css/dist/css/materialize.min.css'
+import App from './components/App.js'
 
-const App = () => (
-    <div className="app">
-        HML
-        <a className="waves-effect waves-light btn">button</a>
-    </div>
-)
+const render = Component => {
+    ReactDOM.render(
+        // <AppContainer>
+            <Component />,
+        // </AppContainer>,
+        document.getElementById("root")
+    )
+}
 
-render(
-    <App />,
-    document.getElementById("root")
-)
+render(App)
+
 if (module.hot) {
-    console.log(yeah)
+
+    module.hot.accept('./components/App', () => { 
+        console.log('app change')
+        render(App) 
+    })
 }

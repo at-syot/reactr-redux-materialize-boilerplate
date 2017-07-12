@@ -1,16 +1,25 @@
 const path = require('path')
 const webpack = require('webpack')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
-    entry: [
-        'react-hot-loader/patch',
-        './src/index.js'
-    ],
+    entry: {
+        app: [
+            /* mormalize: should be on top of application entry point! */
+            './src/normalize.js', 
+            './src/index.js'
+        ],
+        vendors: [
+            'babel-polyfill',
+            'react',
+            'react-dom'
+        ]
+    },
     output: {
-        filename: 'bundle.js',
+        filename: 'static/js/[name].bundle.js',
         path: path.resolve(__dirname, 'dist')
     },
-
     resolve: {
         modules: [
             path.resolve('./node_modules'),
@@ -18,7 +27,14 @@ module.exports = {
             path.resolve('./src/libs')
         ]
     },
-    // devtool: "inline-source-map",
+    devtool: "eval",
+    plugins: [
+        new webpack.HotModuleReplacementPlugin(), // Enable HMR
+        new HtmlWebpackPlugin({
+            template: './src/index.html'
+        }),
+        new ExtractTextPlugin("static/css/[name].css")
+    ],
     devServer: {
         contentBase: path.resolve(__dirname, 'dist'),
         port: 9000,
@@ -35,20 +51,17 @@ module.exports = {
         rules: [
             // react and es2015+
             { 
-                test: /\.js$/, 
+                test: /\.js$/,
                 exclude: /node_modules/, 
                 loader: "babel-loader",
-                options: {
-                    presets: ["react", "env"]
-                }
             },
             // css, scss 
             {
                 test: /\.css$/,
-                use: [
-                    'style-loader',
-                    'css-loader'
-                ]
+                use: ExtractTextPlugin.extract({
+                  fallback: "style-loader",
+                  use: "css-loader"
+                })
             },
 
             // image 
@@ -62,7 +75,7 @@ module.exports = {
             {
                 test: /\.(woff|woff2|eot|ttf|otf)$/,
                 use: [
-                    'file-loader'
+                    'url-loader?limit=1024&name=fonts/[name].[ext]'
                 ]
             }
         ]
