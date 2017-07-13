@@ -1,23 +1,22 @@
+import 'materialize-css/dist/css/materialize.min.css'
+import 'materialize-css/dist/js/materialize.min.js'
+
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { AppContainer } from 'react-hot-loader'
-import App from './components/App.js'
+import Root from './apps/_root'
 
 const render = Component => {
     ReactDOM.render(
-        // <AppContainer>
-            <Component />,
-        // </AppContainer>,
+        <Component />,
         document.getElementById("root")
     )
 }
 
-render(App)
+render(Root)
 
 if (module.hot) {
 
-    module.hot.accept('./components/App', () => { 
-        console.log('app change')
-        render(App) 
+    module.hot.accept('./components/App', () => {
+        render(Root) 
     })
 }
